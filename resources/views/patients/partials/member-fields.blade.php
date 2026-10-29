@@ -44,7 +44,7 @@
 
         <div>
             <x-input-label for="member_pin" value="Member PIN" />
-            <x-text-input id="member_pin" class="block mt-1 w-full" type="text" name="member_pin" :value="$memberPin" maxlength="20" placeholder="12-345678901-2" />
+            <x-text-input id="member_pin" class="block mt-1 w-full" type="text" name="member_pin" :value="$memberPin" maxlength="14" placeholder="12-345678901-2" />
             <p class="mt-1 text-xs text-gray-500">Separate from the member's name. Format: 12-345678901-2</p>
             <x-input-error :messages="$errors->get('member_pin')" class="mt-2" />
         </div>
