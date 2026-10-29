@@ -24,9 +24,14 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri 's!DocumentRoot /var/www/html!DocumentRoot /var/www/html/public!g' /etc/apache2/sites-available/*.conf \
     && sed -ri 's!<Directory /var/www/>!<Directory /var/www/html/public/>!g' /etc/apache2/apache2.conf \
-    && a2enmod rewrite headers \
+    && a2enmod rewrite headers deflate expires \
     && printf '<Directory /var/www/html/public>\n    Options Indexes FollowSymLinks\n    AllowOverride All\n    Require all granted\n</Directory>\n' > /etc/apache2/conf-available/laravel.conf \
-    && a2enconf laravel
+    && a2enconf laravel \
+    && printf '<IfModule mod_deflate.c>\n  AddOutputFilterByType DEFLATE text/html text/plain text/css text/javascript application/javascript application/json\n</IfModule>\n<IfModule mod_expires.c>\n  ExpiresActive On\n  ExpiresByType text/css "access plus 1 month"\n  ExpiresByType application/javascript "access plus 1 month"\n  ExpiresByType image/png "access plus 1 month"\n  ExpiresByType image/jpeg "access plus 1 month"\n  ExpiresByType image/svg+xml "access plus 1 month"\n  ExpiresByType font/woff2 "access plus 1 month"\n</IfModule>\n' > /etc/apache2/conf-available/perf.conf \
+    && a2enconf perf
+
+# OPcache tuning for production
+RUN printf 'opcache.enable=1\nopcache.memory_consumption=128\nopcache.interned_strings_buffer=8\nopcache.max_accelerated_files=10000\nopcache.revalidate_freq=2\nopcache.validate_timestamps=0\n' > /usr/local/etc/php/conf.d/opcache-prod.ini
 
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
