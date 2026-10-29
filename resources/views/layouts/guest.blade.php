@@ -5,7 +5,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        @php
+    $guestTitles = [
+        'login' => 'Log In',
+        'register' => 'Register',
+        'password.request' => 'Forgot Password',
+        'password.reset' => 'Reset Password',
+    ];
+    $appName = config('app.name', 'Dental Facility');
+    $pageTitle = $guestTitles[request()->route()?->getName()] ?? $appName;
+    $fullTitle = $pageTitle === $appName ? $pageTitle : $pageTitle.' - '.$appName;
+@endphp
+<title>{{ $fullTitle }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

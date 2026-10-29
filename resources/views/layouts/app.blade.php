@@ -5,7 +5,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Dental Facility') }}</title>
+        @php
+    $routeTitles = [
+        'dashboard' => 'Dashboard',
+        'patients.index' => 'Patients',
+        'patients.create' => 'Add Patient',
+        'patients.show' => 'Patient Details',
+        'patients.edit' => 'Edit Patient',
+        'patients.visits.create' => 'Add Visit',
+        'visits.edit' => 'Edit Visit',
+        'providers.index' => 'Dentists',
+        'providers.create' => 'Add Dentist',
+        'providers.show' => 'Dentist Details',
+        'providers.edit' => 'Edit Dentist',
+        'dental-aides.index' => 'Dental Aides',
+        'dental-aides.create' => 'Add Dental Aide',
+        'dental-aides.show' => 'Dental Aide Details',
+        'dental-aides.edit' => 'Edit Dental Aide',
+        'users.index' => 'Users',
+        'users.create' => 'Add User',
+        'users.show' => 'User Details',
+        'users.edit' => 'Edit User',
+        'templates.index' => 'Templates',
+        'templates.placeholders' => 'Template Placeholders',
+        'claims.forms' => 'Claim Forms',
+        'profile.edit' => 'Profile',
+    ];
+    $appName = config('app.name', 'Dental Clinic');
+    $pageTitle = $title
+        ?? ($routeTitles[request()->route()?->getName()] ?? null)
+        ?? trim(strip_tags($header ?? ''));
+    if ($pageTitle === '') {
+        $pageTitle = $appName;
+    }
+    $fullTitle = $pageTitle === $appName ? $pageTitle : $pageTitle.' - '.$appName;
+@endphp
+<title>{{ $fullTitle }}</title>
 
         {{-- Apply the saved theme before paint to avoid a light flash. --}}
         <script>
