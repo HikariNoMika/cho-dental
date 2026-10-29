@@ -1,0 +1,29 @@
+services:
+  app:
+    build: .
+    container_name: cho-dental
+    restart: unless-stopped
+    ports:
+      # VPS already uses 8080; expose on 8081 instead
+      - "${APP_PORT:-8081}:80"
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_URL: ${APP_URL:-http://localhost:8081}
+      APP_KEY: ${APP_KEY}
+      DB_CONNECTION: sqlite
+      DB_DATABASE: /var/www/html/database/database.sqlite
+      CLAIM_LIBREOFFICE_BINARY: soffice
+    volumes:
+      # Persist the SQLite database and uploaded templates
+      - cho_dental_data:/var/www/html/database
+      - cho_dental_storage:/var/www/html/storage
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  cho_dental_data:
+  cho_dental_storage:
