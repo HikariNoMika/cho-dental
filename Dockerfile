@@ -1,3 +1,13 @@
+# ---- Stage 1: build frontend assets ----
+FROM node:20-alpine AS assets
+WORKDIR /app
+COPY package.json package-lock.json* ./
+RUN npm ci 2>/dev/null || npm install
+COPY resources ./resources
+COPY vite.config.js tailwind.config.js postcss.config.js ./
+RUN npm run build
+
+# ---- Stage 2: PHP app ----
 FROM php:8.3-apache
 
 # System dependencies
@@ -19,26 +29,17 @@ RUN sed -ri 's!DocumentRoot /var/www/html!DocumentRoot /var/www/html/public!g' /
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Node (for building assets)
-COPY --from=node:20-alpine /usr/local/bin/node /usr/local/bin/node
-COPY --from=node:20-alpine /usr/local/lib/node_modules /usr/local/lib/node_modules
-RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
-
 WORKDIR /var/www/html
 
 # Install PHP dependencies
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts
 
-# Install JS dependencies and build assets
-COPY package.json package-lock.json* ./
-RUN npm ci 2>/dev/null || npm install
-COPY resources ./resources
-COPY vite.config.js tailwind.config.js postcss.config.js ./
-RUN npm run build
-
-# Copy the rest of the app
+# Copy the app (without assets yet)
 COPY . .
+
+# Bring in the built assets from stage 1
+COPY --from=assets /app/public/build ./public/build
 
 # Ensure storage + database dirs are writable
 RUN mkdir -p storage/app/prints storage/app/templates database \
