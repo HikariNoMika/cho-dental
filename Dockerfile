@@ -24,7 +24,9 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri 's!DocumentRoot /var/www/html!DocumentRoot /var/www/html/public!g' /etc/apache2/sites-available/*.conf \
     && sed -ri 's!<Directory /var/www/>!<Directory /var/www/html/public/>!g' /etc/apache2/apache2.conf \
-    && a2enmod rewrite headers
+    && a2enmod rewrite headers \
+    && printf '<Directory /var/www/html/public>\n    Options Indexes FollowSymLinks\n    AllowOverride All\n    Require all granted\n</Directory>\n' > /etc/apache2/conf-available/laravel.conf \
+    && a2enconf laravel
 
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
