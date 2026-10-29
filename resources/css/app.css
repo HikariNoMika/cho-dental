@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    /*
+     * The @tailwindcss/forms plugin gives inputs and selects a white
+     * background. In dark mode the surrounding text turns light, so the
+     * text becomes invisible unless the control also gets a dark
+     * background and light text.
+     */
+    .dark {
+        color-scheme: dark;
+    }
+
+    .dark input:not([type='checkbox']):not([type='radio']):not([type='submit']):not([type='button']):not([type='reset']),
+    .dark select,
+    .dark textarea {
+        background-color: theme('colors.gray.900');
+        color: theme('colors.gray.100');
+        border-color: theme('colors.gray.600');
+    }
+
+    .dark input::placeholder,
+    .dark textarea::placeholder {
+        color: theme('colors.gray.400');
+    }
+
+    .dark input[type='checkbox'],
+    .dark input[type='radio'] {
+        background-color: theme('colors.gray.800');
+        border-color: theme('colors.gray.600');
+    }
+
+    .dark select option {
+        background-color: theme('colors.gray.900');
+        color: theme('colors.gray.100');
+    }
+}
