@@ -6,7 +6,7 @@
     $memberMiddleName = old('member_middle_name', filled($patient?->member_middle_name) ? $patient->member_middle_name : ($linkedMember?->middle_name ?? ''));
     $memberLastName = old('member_last_name', filled($patient?->member_last_name) ? $patient->member_last_name : ($linkedMember?->last_name ?? ''));
     $memberNameExt = old('member_name_ext', filled($patient?->member_name_ext) ? $patient->member_name_ext : ($linkedMember?->name_ext ?? ''));
-    $memberPin = old('member_pin', filled($patient?->member_pin) ? $patient->member_pin : ($linkedMember?->philhealthPin() ?? ''));
+    $memberPin = old('member_pin', filled($patient?->member_pin) ? preg_replace('/\D+/', '', (string) $patient->member_pin) : preg_replace('/\D+/', '', (string) ($linkedMember?->philhealthPin() ?? '')));
 @endphp
 
 <div x-show="!member" x-cloak class="mt-4 border-t border-gray-200 pt-4">
@@ -44,7 +44,7 @@
 
         <div>
             <x-input-label for="member_pin" value="Member PIN" />
-            <x-text-input id="member_pin" class="block mt-1 w-full" type="text" name="member_pin" :value="$memberPin" maxlength="14" placeholder="12-345678901-2" />
+            <x-text-input id="member_pin" class="block mt-1 w-full" type="text" name="member_pin" :value="$memberPin" maxlength="12" placeholder="123456789012" />
             <p class="mt-1 text-xs text-gray-500">Separate from the member's name. Format: 12-345678901-2</p>
             <x-input-error :messages="$errors->get('member_pin')" class="mt-2" />
         </div>

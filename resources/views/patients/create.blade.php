@@ -75,7 +75,7 @@
                             </div>
                             <div>
                                 <x-input-label for="philhealth_pin" value="PhilHealth PIN" />
-                                <x-text-input id="philhealth_pin" class="block mt-1 w-full" type="text" name="philhealth_pin" :value="old('philhealth_pin')" maxlength="14" placeholder="12-345678901-2" />
+                                <x-text-input id="philhealth_pin" class="block mt-1 w-full" type="text" name="philhealth_pin" :value="old('philhealth_pin')" maxlength="12" placeholder="123456789012" />
                                 <p class="mt-1 text-xs text-gray-500">Format: 12-345678901-2</p>
                                 <x-input-error :messages="$errors->get('philhealth_pin')" class="mt-2" />
                             </div>
