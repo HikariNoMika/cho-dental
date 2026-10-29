@@ -12,6 +12,9 @@ fi
 # Run migrations (idempotent)
 php artisan migrate --force
 
+# Ensure the administrator account exists (idempotent)
+php artisan db:seed --class=AdminUserSeeder --force
+
 # Cache config/routes/views for production
 php artisan config:cache || true
 php artisan route:cache || true
